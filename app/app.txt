@@ -1,6 +1,58 @@
-  app.c (app.h)
+app.c (app.h)
    Endless loops, which execute tasks with fixed computing time. This 
    sequential execution is only deviated from when an interrupt event occurs.
    Cyclic Executive (Update by Time Code, period = 1mS)
 
 ...
+
+
+Realiza los siguientes includes 
+
+
+#include "main.h"
+#include "logger.h"
+#include "dwt.h"
+#include "board.h"
+#include "task_a.h"
+#include "task_b.h"	
+#include "task_c.h"
+
+Una serie de definiciones de macro, tales como: 
+#define G_APP_CNT_INI		0ul
+#define G_APP_TICK_CNT_INI	0ul 		
+#define TASK_X_DELAY_MIN	0ul
+#define TASK_X_WCET_INI		0ul
+
+tendremos la definición de un tipo de estructura de configuración y datos "task_cfg_t" y "task_dta_t" respectivamente. Estructuras con campos de punteros a void, etc. 
+
+Se definen dos arrays de estructura de tareas uno de config y otro de data .
+
+Se definen funciones externas empezando con app_init que comienza el ciclo de tareas, dentro del ciclo se ejecutan los métodos de task_init de cada tarea y se inicializa la estructura de datos de cada tarea
+
+Luego está la función de app_update ésta actualiza el ciclo de tareas, definiendo una variable global llamada "la variable global" esta nos da informacion sobre el estado actual del ciclo, es decir
+da el peor tiempo de una de las tareas dentro de cada ciclo, esperamos tener menor tiempo que 1 ms, en donde el obtenido es 191 us.
+
+
+
+	for (index = 0; TASK_QTY > index; index++)
+		{
+			cycle_counter_reset();
+
+    		/* Run task_x_update */
+			(*task_cfg_list[index].task_update)(task_cfg_list[index].parameters);
+
+			cycle_counter_time_us = cycle_counter_get_time_us();
+
+			/* Update variables */
+			g_app_runtime_us += cycle_counter_time_us;
+			
+			if (task_dta_list[index].WCET < cycle_counter_time_us)
+			{
+				task_dta_list[index].WCET = cycle_counter_time_us;
+			}
+		}
+		
+		
+Esta funcionalidad, la realiza con un ciclo for, el cual desplaza un indice seleccionando la proxima tarea a ejecutar. Antes de ejecutar cada tarea reinicia el contador y luego de ejecutada, obtiene el tiempo
+que demora en hacer cada tarea. Ésta variable "g_appruntime_us" va sumando progresivamente el tiempo total en realizar las tareas dentro de un ciclo. Luego compara ese nuevo tiempo con el anterior
+calculado y si este es menor lo redefine. almacenando el peor tiempo en task_dta_list[index].WCET.
