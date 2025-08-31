@@ -1,0 +1,20 @@
+  task_a.c (task_a.h) 
+   Blocking Code
+   Primero, en la función task_a_init, la tarea se inicializa: imprime por consola un mensaje indicando que comenzó a ejecutarse y pone el contador global g_task_a_cnt en cero.
+   Después, en la función task_a_update, el comportamiento de la tarea depende del valor de la constante TEST_X:
+   - Si TEST_X vale TEST_0, cada vez que la tarea se ejecuta incrementa en uno el contador global y luego hace un bucle vacío desde 0 hasta 1000.
+   - Si TEST_X vale TEST_1, en lugar del bucle, la tarea se queda bloqueada esperando 20 milisegundos mediante la función HAL_Delay.
+
+  task_b.c (task_b.h)
+   Non-Blocking Code
+
+...
+
+  task_c.c (task_c.h)
+   Update by Time Code
+   Primero, en la función task_c_init, la tarea se inicializa: imprime por consola un mensaje indicando que comenzó a ejecutarse y pone el contador global g_task_c_cnt en cero.
+   Después, en la función task_c_update, el comportamiento de la tarea depende del valor de la variable g_task_c_tick_cnt:
+   - Si G_TASK_C_TICK_CNT_INI < g_task_c_tick_cnt, decrementa en 1 g_task_c_tick_cnt y habilita el ingreso al while.
+     Dentro del while(), mientras que incrementa en 1 g_task_c_cnt y vuelve a consultar si G_TASK_C_TICK_CNT_INI < g_task_c_tick_cnt. Si lo es, decrementa en 1 g_task_c_tick_cnt y sino modifica el valor de b_time_update_required a FALSE para que en la próxima vuelta salga del while. De esta forma, se incrementará g_task_c_cnt tantas tantas veces como mayor a G_TASK_C_TICK_CNT_INI sea g_task_c_tick_cnt.  
+   El valor de g_task_c_tick_cnt se incrementa desde la función HAL_SYSTICK_Callback() declarada en app.c. Es por ello que la variable g_task_c_tick_cnt está declarada como volatile en forma global.
+   

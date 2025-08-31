@@ -1,0 +1,19 @@
+Archivo principal.
+
+Incluye las bibliotecas:
+- "main.h"
+- "logger.h"
+- "app.h"
+
+Crea la variable global huart2.
+
+El método main() invoca a los métodos HAL_Init() y SystemClock_Config(), para inicializar SysTick y configurar
+SystemCoreClock.
+Luego inicializa otros periféricos e invoca al método app_init(), que inicializa el ejecutor cíclico de tareas.
+Dentro del loop principal invoca al método app_update() refresca al ejecutor cíclico de tareas.
+
+Luego hay otros métodos:
+- SystemClock_Config() - Configura el clock del microcontrolador
+- MX_USART2_UART_Init() - Inicializa la comunicación UART
+- MX_GPIO_Init() - Inicializa los puertos generales de IO
+- Error_Handler - Gestiona el flujo de error

@@ -1,0 +1,4 @@
+Este documento es el archivo de arranque del microcontrolador
+En el mismo está la definición de los registros
+
+Cuando el microcontrolador inicia, llama a la línea Reset_Handler, la cual inicializa lo básico y pasado eso llama a la función main().
