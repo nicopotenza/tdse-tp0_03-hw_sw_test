@@ -7,7 +7,27 @@
 
   task_b.c (task_b.h)
    Non-Blocking Code
-
+El código task_b.c implementa la Tarea B de una aplicación embebida.
+Incluye las bibliotecas del proyecto:
+main.h
+logger.h
+dwt.h
+board.h
+app.h
+Define macros como los que sigue:
+G_TASK_B_CNT_INI → valor inicial del contador global.
+TASK_B_CNT_INI y TASK_B_CNT_MAX → definen el inicio y el límite del contador local.
+TASK_B_DEL_INI y TASK_B_DEL_MAX → definen el inicio y el intervalo máximo del temporizador (en milisegundos).
+Dispone de los siguientes métodos.
+	1	task_b_init(void *parameters)
+		Inicializa la tarea B.
+		Imprime en el log que la tarea está corriendo.
+		Reinicia el contador global g_task_b_cnt y lo muestra por consola/log.
+	2	task_b_update(void *parameters)
+		Actualiza la lógica de la tarea según la macro de compilación TEST_X:
+		TEST_0: contador cíclico (de 0 a TASK_B_CNT_MAX).
+		TEST_1: delay no bloqueante controlado por ticks del sistema.
+		TEST_2: espacio reservado para código futuro
 ...
 
   task_c.c (task_c.h)
